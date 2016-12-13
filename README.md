@@ -3,7 +3,7 @@
 
 ### Photometry Pipeline for RATIR, RIMAS and LMI
 
-PhotoPype is a pipeline for image reduction and photometry, written in Python (2.7), and designed to process frames taken with the following instruments:
+PhotoPipe is a pipeline for automated reduction, photometry and astrometry, written in Python (2.7), and designed to process imaging data from the following instruments:
 
 * [RATIR](http://butler.lab.asu.edu/RATIR/): the Reionization and Transients Infrared/Optical Project.
 * [RIMAS](https://lowell.edu/research/research-facilities/4-3-meter-dct/rimas/): the Rapid infrared IMAger Spectrometer.
@@ -13,11 +13,11 @@ This project is based on the previous versions of the pipeline by [cenko](https:
  
 Built at the NASA Goddard Space Flight Center, in collaboration with the University of Maryland.
 <br><br><br>
-![NASA GSFC - RATIR - UMD](https://github.com/maxperry/photometrypipeline/docs/readme-logos.jpg)
+![NASA GSFC - RATIR - UMD](https://github.com/maxperry/photometrypipeline/raw/master/docs/readme-logos.jpg)
 
 ## Full Documentation
 
-See the [Wiki](https://github.com/) for full documentation, examples, operational details and other information.
+See the [Wiki](https://github.com/maxperry/photometrypipeline/wiki) for full documentation, examples, operational details and other information.
 
 
 ## Installation
