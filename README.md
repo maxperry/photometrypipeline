@@ -51,8 +51,8 @@ $ python setup.py install
 #### 3) Manual Installation
 If you prefer to clone the repository, and run the pipeline from the Python enviroment rather than using the `photopipe` command line entry point, please follow the step by step instructions below to install all the dependencies manually.
 
-* 1) Clone from `git`
-* 2) Follow the instructions for your OS (also provided as bash scripts)
+1. Clone from `git`
+2. Follow the instructions for your OS (also provided as bash scripts)
   * [Instructions for macOS]()
   * [Instructions for Linux]()
 
