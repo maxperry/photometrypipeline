@@ -20,11 +20,16 @@ Built at the NASA Goddard Space Flight Center, in collaboration with the Univers
 See the [Wiki](https://github.com/maxperry/photometrypipeline/wiki) for full documentation, examples, operational details and other information.
 
 
+## Prerequisites
+
+The pipeline can be installed Depending on the installation mode chosen from below, different dependencies and software may be required. Please see the section below, or the [wiki page]() for a full list of prerequisites.
+
+
 ## Installation
 
 The easiest way to get up and running with the pipeline is to download the ready-to-use **virtual machine** box and run it with Vagrant.
 
-Alternatively, it can be installed with `pip` on Linux or macOS.  
+Alternatively, it can be installed on Linux or macOS either with `pip`, or with the provided installation scripts.
 _(**WARNING:** compiling the dependencies can take more than 6 hours.)_
 
 #### 1) Download a pre-configured Virtual Machine
@@ -44,10 +49,12 @@ $ python setup.py install
 ```
 
 #### 3) Manual Installation
-Follow the step by step instructions linked below to compile and install the pipeline and all its dependencies manually.
+If you prefer to clone the repository, and run the pipeline from the Python enviroment rather than using the `photopipe` command line entry point, please follow the step by step instructions below to install all the dependencies manually.
 
-* [Instructions for macOS]()
-* [Instructions for Linux]()
+* 1) Clone from `git`
+* 2) Follow the instructions for your OS (also provided as bash scripts)
+  * [Instructions for macOS]()
+  * [Instructions for Linux]()
 
 
 ## Usage
