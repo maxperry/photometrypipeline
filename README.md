@@ -10,10 +10,10 @@ PhotoPipe is a pipeline for automated reduction, photometry and astrometry, writ
 * [LMI](http://www2.lowell.edu/rsch/LMI/LMI.html): Large Monolitic Imager.  
 
 This project is based on the previous versions of the pipeline by [cenko](https://github.com/cenko/RATIR-GSFC) and [vickitoy](https://github.com/vickitoy/photometry_pipeline).  
- 
 Built at the NASA Goddard Space Flight Center, in collaboration with the University of Maryland.
 <br><br><br>
 ![NASA GSFC - RATIR - UMD](https://github.com/maxperry/photometrypipeline/raw/master/docs/readme-logos.jpg)
+
 
 ## Full Documentation
 
@@ -48,6 +48,7 @@ Follow the step by step instructions linked below to compile and install the pip
 
 * [Instructions for macOS]()
 * [Instructions for Linux]()
+
 
 ## Usage
 
