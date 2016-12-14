@@ -55,8 +55,8 @@ If you prefer to clone the repository, and run the pipeline from the Python envi
 
 1. Clone from `git`
 2. Follow the instructions for your OS (also provided as bash scripts)
-  * [Instructions for macOS]()
-  * [Instructions for Linux]()
+  * [Instructions for macOS](https://github.com/maxperry/photometrypipeline/wiki/Manual-Installation-(macOS))
+  * [Instructions for Debian-Linux](https://github.com/maxperry/photometrypipeline/wiki/Manual-Installation-(Debian-Linux))
 
 
 ## Usage
