@@ -40,23 +40,21 @@ Please refer to the virtual machine [repository](https://github.com/maxperry/pho
 
 #### 2) Install on your machine from PyPI or git
 
-Run `pip install --user photopipe` to install the latest stable version from [PyPI](https://pypi.python.org/pypi/photopipe). 
+* Run `pip install --user photopipe` to install the latest stable version from [PyPI](https://pypi.python.org/pypi/photopipe). 
 
-Or clone from `git`:
+* Or clone from `git`:
 
-```
-$ git clone git@github.com:maxperry/photometrypipeline.git
-$ cd photometrypipeline/
-$ python setup.py install
-```
+ ```
+ $ git clone git@github.com:maxperry/photometrypipeline.git
+ $ cd photometrypipeline/
+ $ python setup.py install
+ ```
 
 #### 3) Manual Installation
 If you prefer to clone the repository, and run the pipeline from the Python enviroment rather than using the `photopipe` command line entry point, please follow the step by step instructions below to install all the dependencies manually.
 
-1. Clone from `git`
-2. Follow the instructions for your OS (also provided as bash scripts)
-  * [Instructions for macOS](https://github.com/maxperry/photometrypipeline/wiki/Manual-Installation-(macOS))
-  * [Instructions for Debian-Linux](https://github.com/maxperry/photometrypipeline/wiki/Manual-Installation-(Debian-Linux))
+* [Instructions for macOS](https://github.com/maxperry/photometrypipeline/wiki/Manual-Installation-(macOS))
+* [Instructions for Debian-Linux](https://github.com/maxperry/photometrypipeline/wiki/Manual-Installation-(Debian-Linux))
 
 
 ## Usage
