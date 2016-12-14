@@ -54,7 +54,7 @@ Please refer to the virtual machine [repository](https://github.com/maxperry/pho
 If you prefer to clone the repository, and run the pipeline from the Python enviroment rather than using the `photopipe` command line entry point, please follow the step by step instructions below to install all the dependencies manually.
 
 * [Instructions for macOS](https://github.com/maxperry/photometrypipeline/wiki/Manual-Installation-(macOS))
-* [Instructions for Debian-Linux](https://github.com/maxperry/photometrypipeline/wiki/Manual-Installation-(Debian-Linux))
+* [Instructions for Linux-Debian](https://github.com/maxperry/photometrypipeline/wiki/Manual-Installation-(Linux-Debian))
 
 
 ## Usage
