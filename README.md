@@ -24,7 +24,7 @@ See the [Wiki](https://github.com/maxperry/photometrypipeline/wiki) for full doc
 
 ## Prerequisites
 
-The pipeline can be installed with very little additional software. However, depending on the installation mode chosen from below, different dependencies and software may be required. Please see the section below, and the dedicated [wiki page](https://github.com/maxperry/photometrypipeline/wiki/Prerequisites) for a full list of prerequisites.
+The pipeline can be installed with very little additional software. However, depending on the installation, different libraries and software may be required. Please see the [Installation](#installation) section below, and the dedicated [wiki page](https://github.com/maxperry/photometrypipeline/wiki/Prerequisites) for a full list of prerequisites.
 
 
 ## Installation
