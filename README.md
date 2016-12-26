@@ -1,7 +1,7 @@
 
 # PhotoPipe
 
-### Photometry Pipeline for RATIR, RIMAS and LMI
+### Photometry Pipeline for RATIR and RIMAS
 
 [![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
 
@@ -9,7 +9,6 @@ PhotoPipe is a pipeline for automated reduction, photometry and astrometry, writ
 
 * [RATIR](http://butler.lab.asu.edu/RATIR/): the Reionization and Transients Infrared/Optical Project.
 * [RIMAS](https://lowell.edu/research/research-facilities/4-3-meter-dct/rimas/): the Rapid infrared IMAger Spectrometer.
-* [LMI](http://www2.lowell.edu/rsch/LMI/LMI.html): Large Monolitic Imager.  
 
 This project is based on the previous versions of the pipeline by [cenko](https://github.com/cenko/RATIR-GSFC) and [vickitoy](https://github.com/vickitoy/photometry_pipeline).  
 Built at the NASA Goddard Space Flight Center, in collaboration with the University of Maryland.
