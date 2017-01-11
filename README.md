@@ -4,6 +4,7 @@
 ### Photometry Pipeline for RATIR and RIMAS
 
 [![astropy](http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat)](http://www.astropy.org/)
+[![PyPI version](https://badge.fury.io/py/photopipe.svg)](https://badge.fury.io/py/photopipe)
 
 PhotoPipe is a pipeline for automated reduction, photometry and astrometry, written in Python (2.7), and designed to process imaging data from the following instruments:
 
