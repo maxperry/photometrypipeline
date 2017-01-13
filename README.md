@@ -46,7 +46,7 @@ Please refer to the virtual machine [repository](https://github.com/maxperry/pho
 
  ```
  $ git clone git@github.com:maxperry/photometrypipeline.git
- $ cd photometrypipeline/photopipe
+ $ cd photometrypipeline
  $ sudo python setup.py install
  ```
  
