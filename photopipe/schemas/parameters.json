@@ -1,0 +1,284 @@
+{
+	"type":"object",
+	"$schema": "http://json-schema.org/draft-03/schema",
+	"id": "http://jsonschema.net",
+	"required":false,
+	"properties":{
+		"autoproc": {
+			"type":"object",
+			"id": "http://jsonschema.net/autoproc",
+			"required":false,
+			"properties":{
+				"customcat": {
+					"type":"string",
+					"id": "http://jsonschema.net/autoproc/customcat",
+					"required":false
+				},
+				"customcatfilt": {
+					"type":"array",
+					"id": "http://jsonschema.net/autoproc/customcatfilt",
+					"required":false,
+					"items":
+						{
+							"type":"string",
+							"id": "http://jsonschema.net/autoproc/customcatfilt/0",
+							"required":false
+						}
+					
+
+				},
+				"datadir": {
+					"type":"string",
+					"id": "http://jsonschema.net/autoproc/datadir",
+					"required":false
+				},
+				"imdir": {
+					"type":"string",
+					"id": "http://jsonschema.net/autoproc/imdir",
+					"required":false
+				},
+				"nocrclean": {
+					"type":"boolean",
+					"id": "http://jsonschema.net/autoproc/nocrclean",
+					"required":false
+				},
+				"nomastersky": {
+					"type":"boolean",
+					"id": "http://jsonschema.net/autoproc/nomastersky",
+					"required":false
+				},
+				"only": {
+					"type":"string",
+					"id": "http://jsonschema.net/autoproc/only",
+					"required":false
+				},
+				"quiet": {
+					"type":"boolean",
+					"id": "http://jsonschema.net/autoproc/quiet",
+					"required":false
+				},
+				"redo": {
+					"type":"boolean",
+					"id": "http://jsonschema.net/autoproc/redo",
+					"required":false
+				},
+				"rmifiles": {
+					"type":"boolean",
+					"id": "http://jsonschema.net/autoproc/rmifiles",
+					"required":false
+				},
+				"start": {
+					"type":"string",
+					"id": "http://jsonschema.net/autoproc/start",
+					"required":false
+				},
+				"step": {
+					"type":"string",
+					"id": "http://jsonschema.net/autoproc/step",
+					"required":false
+				},
+				"stop": {
+					"type":"string",
+					"id": "http://jsonschema.net/autoproc/stop",
+					"required":false
+				}
+			}
+		},
+		"preproc": {
+			"type":"object",
+			"id": "http://jsonschema.net/preproc",
+			"required":false,
+			"properties":{
+				"choose_calib": {
+					"type":"array",
+					"id": "http://jsonschema.net/preproc/choose_calib",
+					"required":false,
+					"items":
+						{
+							"type":"object",
+							"id": "http://jsonschema.net/preproc/choose_calib/0",
+							"required":false,
+							"properties":{
+								"amax": {
+									"type":"number",
+									"id": "http://jsonschema.net/preproc/choose_calib/0/amax",
+									"required":false
+								},
+								"amin": {
+									"type":"number",
+									"id": "http://jsonschema.net/preproc/choose_calib/0/amin",
+									"required":false
+								},
+								"auto": {
+									"type":"boolean",
+									"id": "http://jsonschema.net/preproc/choose_calib/0/auto",
+									"required":false
+								},
+								"cams": {
+									"type":"array",
+									"id": "http://jsonschema.net/preproc/choose_calib/0/cams",
+									"required":false,
+									"items":
+										{
+											"type":"number",
+											"id": "http://jsonschema.net/preproc/choose_calib/0/cams/0",
+											"required":false
+										}
+									
+
+								},
+								"figsize": {
+									"type":"array",
+									"id": "http://jsonschema.net/preproc/choose_calib/0/figsize",
+									"required":false,
+									"items":
+										{
+											"type":"number",
+											"id": "http://jsonschema.net/preproc/choose_calib/0/figsize/0",
+											"required":false
+										}
+									
+
+								},
+								"ftype": {
+									"type":"string",
+									"id": "http://jsonschema.net/preproc/choose_calib/0/ftype",
+									"required":false
+								},
+								"instrument": {
+									"type":"string",
+									"id": "http://jsonschema.net/preproc/choose_calib/0/instrument",
+									"required":false
+								},
+								"noplot": {
+									"type":"boolean",
+									"id": "http://jsonschema.net/preproc/choose_calib/0/noplot",
+									"required":false
+								},
+								"reject_sat": {
+									"type":"boolean",
+									"id": "http://jsonschema.net/preproc/choose_calib/0/reject_sat",
+									"required":false
+								},
+								"save_select": {
+									"type":"boolean",
+									"id": "http://jsonschema.net/preproc/choose_calib/0/save_select",
+									"required":false
+								},
+								"workdir": {
+									"type":"string",
+									"id": "http://jsonschema.net/preproc/choose_calib/0/workdir",
+									"required":false
+								}
+							}
+						}
+					
+
+				},
+				"choose_science": {
+					"type":"object",
+					"id": "http://jsonschema.net/preproc/choose_science",
+					"required":false,
+					"properties":{
+						"auto": {
+							"type":"boolean",
+							"id": "http://jsonschema.net/preproc/choose_science/auto",
+							"required":false
+						},
+						"calibrate": {
+							"type":"boolean",
+							"id": "http://jsonschema.net/preproc/choose_science/calibrate",
+							"required":false
+						},
+						"cams": {
+							"type":"array",
+							"id": "http://jsonschema.net/preproc/choose_science/cams",
+							"required":false,
+							"items":
+								{
+									"type":"number",
+									"id": "http://jsonschema.net/preproc/choose_science/cams/0",
+									"required":false
+								}
+							
+
+						},
+						"figsize": {
+							"type":"array",
+							"id": "http://jsonschema.net/preproc/choose_science/figsize",
+							"required":false,
+							"items":
+								{
+									"type":"number",
+									"id": "http://jsonschema.net/preproc/choose_science/figsize/0",
+									"required":false
+								}
+							
+
+						},
+						"instrument": {
+							"type":"string",
+							"id": "http://jsonschema.net/preproc/choose_science/instrument",
+							"required":false
+						},
+						"noplot": {
+							"type":"boolean",
+							"id": "http://jsonschema.net/preproc/choose_science/noplot",
+							"required":false
+						},
+						"save_select": {
+							"type":"boolean",
+							"id": "http://jsonschema.net/preproc/choose_science/save_select",
+							"required":false
+						},
+						"targetdir": {
+							"type":"string",
+							"id": "http://jsonschema.net/preproc/choose_science/targetdir",
+							"required":false
+						},
+						"workdir": {
+							"type":"string",
+							"id": "http://jsonschema.net/preproc/choose_science/workdir",
+							"required":false
+						}
+					}
+				},
+				"mkmaster": {
+					"type":"array",
+					"id": "http://jsonschema.net/preproc/mkmaster",
+					"required":false,
+					"items":
+						{
+							"type":"object",
+							"id": "http://jsonschema.net/preproc/mkmaster/0",
+							"required":false,
+							"properties":{
+								"fmin": {
+									"type":"number",
+									"id": "http://jsonschema.net/preproc/mkmaster/0/fmin",
+									"required":false
+								},
+								"fn_dict": {
+									"type":"string",
+									"id": "http://jsonschema.net/preproc/mkmaster/0/fn_dict",
+									"required":false
+								},
+								"instrument": {
+									"type":"string",
+									"id": "http://jsonschema.net/preproc/mkmaster/0/instrument",
+									"required":false
+								},
+								"mtype": {
+									"type":"string",
+									"id": "http://jsonschema.net/preproc/mkmaster/0/mtype",
+									"required":false
+								}
+							}
+						}
+					
+
+				}
+			}
+		}
+	}
+}

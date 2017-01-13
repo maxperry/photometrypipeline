@@ -1,0 +1,15 @@
+# If using Python 2.6 or less, then have to include package data, even though
+# it's already declared in setup.py
+
+# Include the license file
+include LICENSE.txt
+include photopipe/VERSION
+
+include depend_install.sh
+include astromatic_install.sh
+include post_install.sh
+
+# Include the data files
+# recursive-include data *
+recursive-include photopipe/schemas *
+

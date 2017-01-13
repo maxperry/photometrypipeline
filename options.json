@@ -1,0 +1,91 @@
+{
+	"preproc": {
+		"choose_calib": [
+			{
+				"ftype": "bias",
+				"instrument": "ratir",
+				"workdir": "/absolute/path/to/fits/bias",
+				"cams": [0,1,2,3],
+				"auto": false,
+				"reject_sat": true,
+				"amin": 0.2,
+				"amax": 0.8,
+				"save_select": true,
+				"figsize": [8,5],
+				"noplot": false
+			},
+			{
+				"ftype": "dark",
+				"instrument": "ratir",
+				"workdir": "/absolute/path/to/fits/dark",
+				"cams": [0,1,2,3],
+				"auto": false,
+				"reject_sat": true,
+				"amin": 0.2,
+				"amax": 0.8,
+				"save_select": true,
+				"figsize": [8,5],
+				"noplot": false
+			},
+			{
+				"ftype": "flat",
+				"instrument": "ratir",
+				"workdir": "/absolute/path/to/fits/flat",
+				"cams": [0,1,2,3],
+				"auto": false,
+				"reject_sat": true,
+				"amin": 0.2,
+				"amax": 0.8,
+				"save_select": true,
+				"figsize": [8,5],
+				"noplot": false
+			}
+		],
+		"choose_science": {
+			"instrument": "ratir",
+			"workdir": "/absolute/path/to/fits/dir",
+			"targetdir": "/absolute/path/to/target/dir",
+			"cams": [0,1,2,3],
+			"auto": false,
+			"save_select": true,
+			"figsize": [10,10],
+			"calibrate": false,
+			"noplot": false
+		},
+		"mkmaster": [
+			{
+				"instrument": "ratir",
+				"fn_dict": "/absolute/path/to/dict/file",
+				"mtype": "bias",	
+				"fmin": 5
+			},
+			{
+				"instrument": "ratir",
+				"fn_dict": "/absolute/path/to/dict/file",
+				"mtype": "dark",
+				"fmin": 5
+			},
+			{
+				"instrument": "ratir",
+				"fn_dict": "/absolute/path/to/dict/file",
+				"mtype": "flat",
+				"fmin": 5
+			}
+		]
+	},
+	"autoproc": {
+		"datadir": "/absolute/path/to/raw/fits/dir",
+		"imdir": "/aboslute/path/to/reduced/dir",
+		"start": "",
+		"stop": "",
+		"only": "",
+		"step": "",
+		"nocrclean": false,
+		"nomastersky": false,
+		"redo": false,		
+		"quiet": false,
+		"rmifiles": false,
+		"customcat": "",
+		"customcatfilt": [""]
+	}
+}

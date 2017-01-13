@@ -1,0 +1,50 @@
+# Default configuration file for MissFITS 2.8.0
+# EB CM 2014-05-12
+#
+#------------------------------- FITS keywords --------------------------------
+REMOVE_KEYWORD                         # Remove a FITS keyword from the headers
+REPLACE_KEYWORD                        # Replace a FITS keyword with another
+                                       # Syntax: OLD_KEY1:NEW_KEY1,
+                                       #         OLD_KEY2:NEW_KEY2,...
+SLICE_KEYWORD                          # Replace the keyword 
+                                       # SLICE_KEYWORD+SLICEKEY_FORMAT
+                                       # with SLICE_KEYWORD for every slice
+                                       # or viceversa building cubes
+SLICEKEY_FORMAT        %03d            # format of slice referring keywords
+DISPLAY_KEYWORD        OBJECT          # Display the following keywords while
+                                       # processing the files
+ 
+HEADER_SUFFIX          .head           # Filename extension for add. headers
+ 
+#------------------------------ FITS properties -------------------------------
+ 
+NEXTENSIONS_MIN        0               # Minimum number of extensions (warns
+                                       # if less are found)
+OUTFILE_TYPE           SAME            # Basic or Multi-FITS output:
+                                       # "SAME", "MULTI", "SPLIT",
+                                       # "SLICE", "CUBE" or "DIR"
+SPLIT_SUFFIX           .%03d.fits      # Suffix expected for split FITS files
+SLICE_SUFFIX           .%03d.fits      # Suffix expected for sliced FITS files
+ 
+#-------------------------------- FITS data  ----------------------------------
+ 
+PROCESS_TYPE           NONE            # Operations on FITS data:
+                                       # "NONE", "TOBITPIX16", "COMPRESS" or "UNCOMPRESS"
+ 
+CHECKSUM_TYPE          NONE            # Checksum operations:
+                                       # "NONE", "COMPUTE", "VERIFY" or
+                                       # "UPDATE"
+#------------------------------- Output filename  -----------------------------
+ 
+SAVE_TYPE              BACKUP          # Behaviour towards output filename:
+                                       # "NONE", "BACKUP", "NEW" or "REPLACE"
+ 
+NEW_SUFFIX             .miss           # suffix to add in SAVE_TYPE NEW mode
+ 
+#------------------------------ Miscellaneous ---------------------------------
+ 
+VERBOSE_TYPE           NORMAL          # "QUIET","NORMAL" or "FULL"
+WRITE_XML              Y               # Write XML file (Y/N)?
+XML_NAME               missfits.xml    # Filename for XML output
+NTHREADS               1               # 1 single thread
+ 
