@@ -40,15 +40,17 @@ Please refer to the virtual machine [repository](https://github.com/maxperry/pho
 
 #### 2) Install on your machine from PyPI or git
 
-* Run `pip install --user photopipe` to install the latest stable version from [PyPI](https://pypi.python.org/pypi/photopipe). 
+* Run `sudo -H pip install photopipe` to install the latest stable version from [PyPI](https://pypi.python.org/pypi/photopipe). 
 
 * Or clone from `git`:
 
  ```
  $ git clone git@github.com:maxperry/photometrypipeline.git
- $ cd photometrypipeline/
- $ python setup.py install
+ $ cd photometrypipeline/photopipe
+ $ sudo python setup.py install
  ```
+ 
+**NOTE (macOS)**: If the installation fails with `sudo: port: command not found` make sure that [MacPorts](https://guide.macports.org/#installing) is installed and `/opt/local/bin` is in the $PATH (e.g. `export PATH=/opt/local/bin:/opt/local/sbin:$PATH`).
 
 #### 3) Manual Installation
 If you to run the pipeline from the Python enviroment rather than using the `photopipe` command as described in the [Usage](#usage) section, please follow the step by step instructions in the wiki pages below to install all the dependencies manually.
