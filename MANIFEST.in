@@ -12,4 +12,12 @@ include post_install.sh
 # Include the data files
 # recursive-include data *
 recursive-include photopipe/schemas *
+recursive-include photopipe/photometry/defaults *
+recursive-include photopipe/photometry/dependencies *
+recursive-include photopipe/reduction/astrom *
+recursive-include photopipe/reduction/auto/defaults *
+
+
+
+
 
