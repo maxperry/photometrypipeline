@@ -174,10 +174,27 @@ imdata
  
   preproc.mkmaster('ratir', flat_calib, 'flat')  
  ```
- **WARNING**:
-  - Make sure to set the correct number of **cameras** where required (e.g. `cams[0,1,2,3`).
-  - `amin/amax` set the min and max **saturation** values. Make sure to select the appropriate values for each type of frame, only frames with median values in this range will be selected.
  
+ **WARNING**:
+  1. Always use absolute paths terminated by a `/` when setting `dir` parameters. 
+  2. Make sure to set the correct number of **cameras** where required (e.g. `cams[0,1,2,3`).
+  3. `amin/amax` set the min and max **saturation** values. Make sure to select the appropriate values for each type of frame, only frames with median values in this range will be selected.
+ 
+See [wiki page](https://github.com/maxperry/photometrypipeline/wiki/preproc.py) for `preproc` functions reference.
+  
+####3. Run auto reduction
+ 1. Start a new python environment
+ 2. Execute the script below:
+  ```python
+   from photopipe.reduction.auto.autoproc import autoproc
+
+   autoproc(datadir='/vagrant_data/imdata/science_selected/', 
+            imdir='/vagrant_data/imdata/reduced/', 
+            redo=1)
+  ```
+  
+See [wiki page](https://github.com/maxperry/photometrypipeline/wiki/autoproc.py) for `autoproc` function reference.
+  
 ## Bugs and Feedback
 
 For bugs, questions and discussions please use the [Github Issues](https://github.com/maxperry/photometrypipeline/issues).
