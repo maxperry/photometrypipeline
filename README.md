@@ -61,8 +61,35 @@ If you to run the pipeline from the Python enviroment rather than using the `pho
 
 ## Usage
 
-To run the pipeline using the [sample data]() do the following:
+The following steps can be reproduced using the test data downloadable [here](https://drive.google.com/file/d/0BzMOBEOpFL9LaHpkWnFXc0IzRmM/view?usp=sharing), either from your local machine or from the virtual machine.
 
+####1. Prepare the imaging data
+
+ - Create a new folder with the following structure:
+ 
+ ```
+data  
+│
+└───bias
+│   │   20160628T032914C0b.fits
+│   │   20160628T032914C1b.fits
+│   │   ...
+│   
+└───dark
+│   │   20160628T040211C0d.fits
+│   │   20160628T040211C1d.fits
+│   │   ...   
+│
+└───flat
+│   │   20160628T024207C0f.fits
+│   │   20160628T024207C1f.fits
+│   │   ...    
+│
+└───science
+    │   20160628T043940C0o.fits
+    │   20160628T043940C1o.fits
+    │   ...    
+```
 
 ## Bugs and Feedback
 
