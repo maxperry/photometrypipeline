@@ -86,12 +86,17 @@ imdata
 │   │   ...    
 │
 └───science
-    │   20160628T043940C0o.fits
-    │   20160628T043940C1o.fits
-    │   ...    
+│   │   20160628T043940C0o.fits
+│   │   20160628T043940C1o.fits
+│   │   ...    
+│
+└───science_selected
+│
+└───reduced
 ```
- - **If running on your Host Machine**: Open the terminal and `cd` into the `imdata` dir
- - **If running on PhotoPipe-VM**: Launch the VM first ([see instructions](https://github.com/maxperry/photometrypipeline-vm#usage)), and `cd /vagrant_data/imdata`
+ - **If running on your Host Machine**: Open the terminal and do `cd ./imdata/reduced`
+ - **If running on PhotoPipe-VM**: Launch the VM first ([see instructions](https://github.com/maxperry/photometrypipeline-vm#usage)), and `cd /vagrant_data/imdata/reduce`
+ - **NOTE**: It's important to perform the steps below from the `reduced` folder, otherwise make sure to move the master frames there after running `mkmaster` (it saves to the current dir!). 
 
 ####2. Run preprocessing functions
  1. Enter Python environment: `$ python`
@@ -131,6 +136,35 @@ imdata
                                     reject_sat=False, 
                                     save_select=True, 
                                     noplot=False)
+                                    
+  # WARNING: RATIR flats are often bad even when 
+  # the median value is in the acceptable range. 
+  # Auto mode is only recommended for bias frame 
+  # selection.     
+  
+  # Select science frames
+  # (selected frames will be copied to target_dir)
+  science_dict = preproc.choose_science('ratir', 
+                                        workdir='/vagrant_data/imdata/science, 
+                                        targetdir='/vagrant_data/imdata/science-selected', 
+                                        cams=[0,1,2,3], 
+                                        auto=True, 
+                                        save_select=True, 
+                                        calibrate=False, 
+                                        noplot=False) 
+
+  # WARNING: When auto is True, all science frames
+  # are selected. Since the telescope occasionally
+  # has tracking issues, it is recommended to check
+  # all frames.  
+  
+  # Make master frames
+  # (saves to the current dir)
+  preproc.mkmaster('ratir', bias_calib, 'bias')
+
+  preproc.mkmaster('ratir', dark_calib, 'dark')
+ 
+  preproc.mkmaster('ratir', flat_calib, 'flat')  
  ```
 
 ## Bugs and Feedback
