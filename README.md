@@ -34,7 +34,7 @@ The easiest way to get up and running with the pipeline is to download the ready
 Alternatively, it can be installed on Linux or macOS either with `pip`, or with the provided installation scripts.
 _(**WARNING:** compiling the dependencies can take more than 6 hours.)_
 
-#### 1) Download a pre-configured Virtual Machine
+#### 1) Download a pre-configured Virtual Machine (PhotoPipe-VM)
 
 Please refer to the virtual machine [repository](https://github.com/maxperry/photometrypipeline-vm).
 
@@ -42,7 +42,7 @@ Please refer to the virtual machine [repository](https://github.com/maxperry/pho
 
 * Run `sudo -H pip install photopipe` to install the latest stable version from [PyPI](https://pypi.python.org/pypi/photopipe). 
 
-* Or clone from `git`:
+* Or, clone from `git`:
 
  ```
  $ git clone git@github.com:maxperry/photometrypipeline.git
@@ -63,12 +63,12 @@ If you to run the pipeline from the Python enviroment rather than using the `pho
 
 The following steps can be reproduced using the test data downloadable [here](https://drive.google.com/file/d/0BzMOBEOpFL9LaHpkWnFXc0IzRmM/view?usp=sharing), either from your local machine or from the virtual machine.
 
-####1. Prepare the imaging data
-
- - Create a new folder with the following structure:
+####1. Create a new directory with the following structure:
+ 
+ **NOTE for PhotoPipe-VM**: Create the `imdata` directory in the VM's shared data dir (should be `./photopipe-vm/data`) 
  
  ```
-data  
+imdata  
 │
 └───bias
 │   │   20160628T032914C0b.fits
@@ -90,6 +90,48 @@ data
     │   20160628T043940C1o.fits
     │   ...    
 ```
+ - **If running on your Host Machine**: Open the terminal and `cd` into the `imdata` dir
+ - **If running on PhotoPipe-VM**: Launch the VM first ([see instructions](https://github.com/maxperry/photometrypipeline-vm#usage)), and `cd /vagrant_data/imdata`
+
+####2. Run preprocessing functions
+ 1. Enter Python environment: `$ python`
+ 2. Run the following script:
+  ```python
+  from photopipe.reduction import preproc
+  
+  # Bias frames calibration 
+  bias_calib = preproc.choose_calib('ratir', 
+                                    'bias', 
+                                    workdir='/vagrant_data/imdata/bias/', 
+                                    cams=[0,1], 
+                                    auto=True, 
+                                    amin=0.0, amax=1.0, 
+                                    reject_sat=False, 
+                                    save_select=True, 
+                                    noplot=False)
+ 
+  # Dark frames calibration
+  dark_calib = preproc.choose_calib('ratir', 
+                                    'dark', 
+                                    workdir='/vagrant_data/imdata/dark/', 
+                                    cams=[0,1], 
+                                    auto=True, 
+                                    amin=0.0, amax=1.0, 
+                                    reject_sat=False, 
+                                    save_select=True, 
+                                    noplot=False)
+
+  # Flat frames calibration 
+  flat_calib = preproc.choose_calib('ratir', 
+                                    'flat', 
+                                    workdir='/vagrant_data/imdata/flat/', 
+                                    cams=[0,1,2,3], 
+                                    auto=True, 
+                                    amin=0.2, amax=0.8, 
+                                    reject_sat=False, 
+                                    save_select=True, 
+                                    noplot=False)
+ ```
 
 ## Bugs and Feedback
 
