@@ -94,9 +94,10 @@ imdata
 │
 └───reduced
 ```
- - **If running on your Host Machine**: Open the terminal and do `cd ./imdata/reduced`
- - **If running on PhotoPipe-VM**: Launch the VM first ([see instructions](https://github.com/maxperry/photometrypipeline-vm#usage)), and `cd /vagrant_data/imdata/reduced`
- - **NOTE**: It's important to perform the steps below from the `reduced` folder, otherwise make sure to move the master frames there after running `mkmaster` (it saves to the current dir!). 
+
+- **If running on your Host Machine**: Open the terminal and `cd ./imdata/reduced`
+- **If running on PhotoPipe-VM**: Launch the VM first ([see instructions](https://github.com/maxperry/photometrypipeline-vm#usage)), and `cd /vagrant_data/imdata/reduced`
+- **NOTE**: It's important to perform the steps below from the `reduced` folder, otherwise make sure to move the master frames there after running `mkmaster` (it saves to the current dir!). 
 
 ####2. Run preprocessing functions
  1. Enter Python environment: `$ python`
@@ -179,8 +180,8 @@ imdata
   1. Always use absolute paths terminated by a `/` when setting `dir` parameters. 
   2. Make sure to set the correct number of **cameras** where required (e.g. `cams[0,1,2,3`).
   3. `amin/amax` set the min and max **saturation** values. Make sure to select the appropriate values for each type of frame, only frames with median values in this range will be selected.
- 
-See [wiki page](https://github.com/maxperry/photometrypipeline/wiki/preproc.py) for `preproc` functions reference.
+  
+ See [wiki page](https://github.com/maxperry/photometrypipeline/wiki/preproc.py) for `preproc` functions reference.
   
 ####3. Run auto reduction
  1. Start a new python environment
@@ -193,7 +194,7 @@ See [wiki page](https://github.com/maxperry/photometrypipeline/wiki/preproc.py) 
             redo=1)
   ```
   
-See [wiki page](https://github.com/maxperry/photometrypipeline/wiki/autoproc.py) for `autoproc` function reference.
+ See [wiki page](https://github.com/maxperry/photometrypipeline/wiki/autoproc.py) for `autoproc` function reference.
   
 ## Bugs and Feedback
 
