@@ -63,7 +63,7 @@ If you to run the pipeline from the Python enviroment rather than using the `pho
 
 The following steps can be reproduced using the test data downloadable [here](https://drive.google.com/file/d/0BzMOBEOpFL9LaHpkWnFXc0IzRmM/view?usp=sharing), either from your host machine or from the virtual machine.
 
-####1. Create a new directory with the following structure:
+####1) Create a new directory with the following structure:
  
  **NOTE for PhotoPipe-VM**: Create the `imdata` directory in the VM's shared data dir (should be `./photopipe-vm/data`) 
  
@@ -95,52 +95,55 @@ imdata
 └───reduced
 ```
 
-- **If running on your Host Machine**: Open the terminal and `cd ./imdata/reduced`
-- **If running on PhotoPipe-VM**: Launch the VM first ([see instructions](https://github.com/maxperry/photometrypipeline-vm#usage)), and `cd /vagrant_data/imdata/reduced`
-- **NOTE**: It's important to perform the steps below from the `reduced` folder, otherwise make sure to move the master frames there after running `mkmaster` (it saves to the current dir!). 
+**If running on your Host Machine**: Open the terminal and `cd ./imdata/reduced`
 
-####2. Run preprocessing functions
+**If running on PhotoPipe-VM**: Launch the VM first ([see instructions](https://github.com/maxperry/photometrypipeline-vm#usage)), and `cd /vagrant_data/imdata/reduced`
+
+**NOTE**: It's important to perform the steps below from the `reduced` folder, otherwise make sure to move the master frames there after running `mkmaster` (it saves to the current dir!). 
+
+####2) Run preprocessing functions
  1. Enter Python environment: `$ python`
  2. Run the following script:
+ 
   ```python
   from photopipe.reduction import preproc
   
   # Bias frames calibration 
   
-  bias_calib = preproc.choose_calib('ratir', 
-                                    'bias', 
-                                    workdir='/vagrant_data/imdata/bias/', 
-                                    cams=[0,1], 
-                                    auto=True, 
-                                    amin=0.0, amax=1.0, 
-                                    reject_sat=False, 
-                                    save_select=True, 
-                                    noplot=False)
+  bias_calib = preproc.choose_calib( 'ratir', 
+                                     'bias', 
+                                     workdir='/vagrant_data/imdata/bias/', 
+                                     cams=[0,1], 
+                                     auto=True, 
+                                     amin=0.0, amax=1.0, 
+                                     reject_sat=False, 
+                                     save_select=True, 
+                                     noplot=False )
  
  
   # Dark frames calibration
   
-  dark_calib = preproc.choose_calib('ratir', 
-                                    'dark', 
-                                    workdir='/vagrant_data/imdata/dark/', 
-                                    cams=[0,1], 
-                                    auto=True, 
-                                    amin=0.0, amax=1.0, 
-                                    reject_sat=False, 
-                                    save_select=True, 
-                                    noplot=False)
+  dark_calib = preproc.choose_calib( 'ratir', 
+                                     'dark', 
+                                     workdir='/vagrant_data/imdata/dark/', 
+                                     cams=[0,1], 
+                                     auto=True, 
+                                     amin=0.0, amax=1.0, 
+                                     reject_sat=False, 
+                                     save_select=True, 
+                                     noplot=False )
 
   # Flat frames calibration 
   
-  flat_calib = preproc.choose_calib('ratir', 
-                                    'flat', 
-                                    workdir='/vagrant_data/imdata/flat/', 
-                                    cams=[0,1,2,3], 
-                                    auto=True, 
-                                    amin=0.2, amax=0.8, 
-                                    reject_sat=False, 
-                                    save_select=True, 
-                                    noplot=False)
+  flat_calib = preproc.choose_calib( 'ratir', 
+                                     'flat', 
+                                     workdir='/vagrant_data/imdata/flat/', 
+                                     cams=[0,1,2,3], 
+                                     auto=True, 
+                                     amin=0.2, amax=0.8, 
+                                     reject_sat=False, 
+                                     save_select=True, 
+                                     noplot=False )
                                     
   # WARNING: RATIR flats are often bad even when 
   # the median value is in the acceptable range. 
@@ -151,14 +154,14 @@ imdata
   # Select science frames
   # (selected frames will be copied to target_dir)
   
-  science_dict = preproc.choose_science('ratir', 
-                                        workdir='/vagrant_data/imdata/science, 
-                                        targetdir='/vagrant_data/imdata/science_selected', 
-                                        cams=[0,1,2,3], 
-                                        auto=True, 
-                                        save_select=True, 
-                                        calibrate=False, 
-                                        noplot=False) 
+  science_dict = preproc.choose_science( 'ratir', 
+                                         workdir='/vagrant_data/imdata/science, 
+                                         targetdir='/vagrant_data/imdata/science_selected', 
+                                         cams=[0,1,2,3], 
+                                         auto=True, 
+                                         save_select=True, 
+                                         calibrate=False, 
+                                         noplot=False ) 
 
   # WARNING: When auto is True, all science frames
   # are selected. Since the telescope occasionally
@@ -176,22 +179,23 @@ imdata
   preproc.mkmaster('ratir', flat_calib, 'flat')  
  ```
  
+ See [wiki page](https://github.com/maxperry/photometrypipeline/wiki/preproc.py) for `preproc` functions reference.
+
  **WARNING**:
   1. Always use absolute paths terminated by a `/` when setting `dir` parameters. 
   2. Make sure to set the correct number of **cameras** where required (e.g. `cams[0,1,2,3`).
   3. `amin/amax` set the min and max **saturation** values. Make sure to select the appropriate values for each type of frame, only frames with median values in this range will be selected.
   
- See [wiki page](https://github.com/maxperry/photometrypipeline/wiki/preproc.py) for `preproc` functions reference.
-  
-####3. Run auto reduction
+####3) Run auto reduction
  1. Start a new python environment
  2. Execute the script below:
+ 
   ```python
    from photopipe.reduction.auto.autoproc import autoproc
 
-   autoproc(datadir='/vagrant_data/imdata/science_selected/', 
-            imdir='/vagrant_data/imdata/reduced/', 
-            redo=1)
+   autoproc( datadir='/vagrant_data/imdata/science_selected/', 
+              imdir='/vagrant_data/imdata/reduced/', 
+              redo=1 )
   ```
   
  See [wiki page](https://github.com/maxperry/photometrypipeline/wiki/autoproc.py) for `autoproc` function reference.
