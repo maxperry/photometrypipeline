@@ -101,7 +101,7 @@ imdata
 
 **NOTE**: It's important to perform the steps below from the `reduced` folder, otherwise make sure to move the master frames there after running `mkmaster` (it saves to the current dir!). 
 
-####2) Run preprocessing functions
+####2) Preprocessing
  1. Enter Python environment: `$ python`
  2. Run the following script:
  
@@ -186,7 +186,7 @@ imdata
   2. Make sure to set the correct number of **cameras** where required (e.g. `cams[0,1,2,3`).
   3. `amin/amax` set the min and max **saturation** values. Make sure to select the appropriate values for each type of frame, only frames with median values in this range will be selected.
   
-####3) Run auto reduction
+####3) Reduction
  1. Start a new python environment
  2. Execute the script below:
  
@@ -197,9 +197,27 @@ imdata
               imdir='/vagrant_data/imdata/reduced/', 
               redo=1 )
   ```
-  
+ 3. Reduced frames will be saved to `imdir` using `coadd` as prefix in the filename.
+ 
  See [wiki page](https://github.com/maxperry/photometrypipeline/wiki/autoproc.py) for `autoproc` function reference.
-  
+
+####4) Photometry
+
+ 1. Move the `coadd` files to a new dir called `photometry`, and cd into it
+ 2. Start a new python environment, and execute the script below:
+ 
+  ```python
+   from photopipe.photometry.autoredux import autoredux
+   autoredux()
+  ```
+ **NOTE**: It's important to start python from the `photometry` dir containing the `coadd` files.
+ 
+ **[autoredux](https://github.com/maxperry/photometrypipeline/blob/master/photopipe/photometry/autoredux.py)** will run the following scripts:
+
+  1.  **[photom.py](https://github.com/maxperry/photometrypipeline/blob/master/photopipe/photometry/photom.py)**: Samples and crops all files, creates a multicolor image used to find all sources, then finds the *aperture photometry* for each of those sources (resampled) using sextractor (with corrected zeropoint).  
+        - Output: *.am (absolute magnitude) files for w/ RA and DEC identified by sextractor
+  2. **[plotphotom.py](https://github.com/maxperry/photometrypipeline/blob/master/photopipe/photometry/plotphotom.py)**: Plots photometry results to a HTML page.
+ 
 ## Bugs and Feedback
 
 For bugs, questions and discussions please use the [Github Issues](https://github.com/maxperry/photometrypipeline/issues).
