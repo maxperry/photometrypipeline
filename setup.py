@@ -75,7 +75,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.1.0b3',
+    version='0.1.0b4',
 
     description='PhotoPipe is a pipeline for automated reduction, photometry and astrometry of imaging data from RATIR and RIMAS.',
     long_description=long_description,
