@@ -5,9 +5,14 @@ import numpy as np
 import datetime
 import astrometrystats as astst
 import cosmics
-import matplotlib.pyplot as plt
 import timeit
 import scipy
+
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+# Disable interactive mode
+plt.ioff()
 
 def pipeprepare(filename, outname=None, biasfile=None, darkfile=None, verbose=1):
 
