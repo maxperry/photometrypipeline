@@ -63,7 +63,7 @@ If you to run the pipeline from the Python enviroment rather than using the `pho
 
 The following steps can be reproduced using the test data downloadable [here](https://drive.google.com/file/d/0BzMOBEOpFL9LaHpkWnFXc0IzRmM/view?usp=sharing), either from your host machine or from the virtual machine.
 
-####1) Create a new directory with the following structure:
+#### 1) Create a new directory with the following structure:
  
  **NOTE for PhotoPipe-VM**: Create the `imdata` directory in the VM's shared data dir (should be `./photopipe-vm/data`) 
  
@@ -101,7 +101,7 @@ imdata
 
 **NOTE**: It's important to perform the steps below from the `reduced` folder, otherwise make sure to move the master frames there after running `mkmaster` (it saves to the current dir!). 
 
-####2) Preprocessing
+#### 2) Preprocessing
  1. Enter Python environment: `$ python`
  2. Run the following script:
  
@@ -186,7 +186,7 @@ imdata
   2. Make sure to set the correct number of **cameras** where required (e.g. `cams[0,1,2,3`).
   3. `amin/amax` set the min and max **saturation** values. Make sure to select the appropriate values for each type of frame, only frames with median values in this range will be selected.
   
-####3) Reduction
+#### 3) Reduction
  1. Start a new python environment
  2. Execute the script below:
  
@@ -201,7 +201,7 @@ imdata
  
  See [wiki page](https://github.com/maxperry/photometrypipeline/wiki/autoproc.py) for `autoproc` function reference.
 
-####4) Photometry
+#### 4) Photometry
 
  1. Move the `coadd` files to a new dir called `photometry`, and cd into it
  2. Start a new python environment, and execute the script below:
