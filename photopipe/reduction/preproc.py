@@ -714,15 +714,21 @@ def choose_science(instrument, workdir='.', targetdir='.', cams=[0,1,2,3], auto=
                 else:
                     user = raw_input("\nType Y for YES, N for NO, Q for QUIT: ")
                 
-                if user.lower() == 'y' and instrum.is_cam_split(cam_i): 
-                    if instrum.get_centered_filter(h, cam_i).count(instrum.get_filter(h, 'C{}b'.format(cam_i))) != 0:
+                if user.lower() == 'y' and instrum.is_cam_split(cam_i):
+                    filterA = instrum.get_filter(h, 'C{}a'.format(cam_i)).lower()
+                    filterB = instrum.get_filter(h, 'C{}b'.format(cam_i)).lower()
+
+                    if instrum.get_centered_filter(h, cam_i).count(filterB) != 0:
                         direction = 't'
-                    elif instrum.get_centered_filter(h, cam_i).count(instrum.get_filter(h, 'C{}a'.format(cam_i))) != 0:
+                    elif instrum.get_centered_filter(h, cam_i).count(filterA) != 0:
+                        direction = 'b'
+                    elif instrum.get_centered_filter(h, cam_i).lower() == 'r' and (filterB == 'h' or filterA == 'z'):
+                        # keeping frames 'r' centered with split filter 'Z/Y' or 'J/H'
                         direction = 'b'
                     else:
                         af.print_warn("\t* Warning: Skipping frame not centered on split filter.")
                         user = 'n'
-                        direction = ''
+                        direction = ''                        
                
                 if user.lower() == 'y':
 
@@ -785,7 +791,7 @@ def choose_science(instrument, workdir='.', targetdir='.', cams=[0,1,2,3], auto=
                 else: # invalid case
                     af.print_warn("'{}' is not a valid entry.".format(user))
 
-            if not auto:
+            if not auto and not noplot:
                 fig.clear() # clear image
             hdulist.close() # close FITs file
 
