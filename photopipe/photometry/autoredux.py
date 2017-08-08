@@ -6,4 +6,4 @@ def autoredux():
 	photom.photom()
 	print 'plotphotom'
 	plotphotom.plotphotom()
-	print 'Processing complete. Results saved to photom.html'
+	print 'Processing complete. Results saved to photom.html and photom.json'

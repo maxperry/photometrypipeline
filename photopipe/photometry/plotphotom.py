@@ -26,17 +26,23 @@ import numpy as np
 import astropy.io.fits as pf
 from scipy.ndimage.interpolation import zoom
 from scipy.misc import bytescale
-import pylab as pl
+#import pylab as pl
 import scipy as sp
 from astropy import wcs
+
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as pl
+# Disable interactive mode
+pl.ioff()
 
 import photprocesslibrary as pplib
 import printhtml
 import os
 import sys
+import itertools, time, json, codecs
 
 def plotphotom(prefchar='coadd'):
-
 	#Initialize arrays
     filters = ['r','i','z','y','J','H']
     arr_size = 10000
@@ -248,10 +254,16 @@ def plotphotom(prefchar='coadd'):
     
     objra  = store[0]
     objdec = store[1]
+
+    #Initialize dictionary for photometry json file
+    jsondict = { "createdAt": time.time(), "header": ['id'] + names, "filters": filters, "colorImgSrc": "color.png", "aperture": aper, "scaleFactor": scalefactor, "filterImages": [], "data": [] }
+    #
     
     #Plot each image with circles on star identification
     for i in range(len(zffiles)):
     	ifile   = zffiles[i]
+        ofile = ifile.split('.')[0] + '.png'
+
     	img     = imgarr[i]
     	h       = harr[i]
     	cfilter = cfilterarr[i]
@@ -273,20 +285,7 @@ def plotphotom(prefchar='coadd'):
     	fs = 20
     	fw = 'normal'
     	lw = 2
-    	
-    	#For each star create a circle and plot in green
-    	#If pixel coordinates of star (from WCS conversion of RA and DEC) and within the 
-    	#x and y limits, then put text on right side, otherwise put on left
-    	for j in range(len(objra)):
-    		ctemp = pplib.circle( pixcrd[j][0]/scalefactor, pixcrd[j][1]/scalefactor, aper ).T
-    		pl.plot( ctemp[0], ctemp[1], c='#00ff00', lw=lw )
-    		if pixcrd[j][0]/scalefactor+40 < xlims[1] and pixcrd[j][1]/scalefactor+20 < ylims[1]:
-    			pl.text( pixcrd[j][0]/scalefactor+15, pixcrd[j][1]/scalefactor, `j`, color='#00ff00', fontsize=fs, fontweight=fw )
-    		else:
-    			pl.text( pixcrd[j][0]/scalefactor-45, pixcrd[j][1]/scalefactor-20, `j`, color='#00ff00', fontsize=fs, fontweight=fw )
-    			
-    	#Label plot and remove axes, save to filename+.png
-    	pl.text( 0.2*xlims[1], 0.9*ylims[1], cfilter+'-Band', color='r', fontsize=fs, fontweight=fw )
+
         a = pl.gca()
         a.set_frame_on(False)
         a.set_xticks([]); a.set_yticks([])
@@ -294,8 +293,36 @@ def plotphotom(prefchar='coadd'):
         pl.xlim(xlims)
         pl.ylim(ylims)
         fig.set_size_inches(figsize[0], figsize[1])
-        ofile = ifile.split('.')[0] + '.png'
+        pl.savefig('o_' + ofile, bbox_inches='tight', pad_inches=0, transparent=True, dpi=dpi )
+
+        jsondict["filterImages"].append({ "src": 'o_' + ofile, "filter": cfilter })
+
+        #For each star create a circle and plot in green
+        #If pixel coordinates of star (from WCS conversion of RA and DEC) and within the 
+        #x and y limits, then put text on right side, otherwise put on left
+        for j in range(len(objra)):
+            ctemp = pplib.circle( pixcrd[j][0]/scalefactor, pixcrd[j][1]/scalefactor, aper ).T
+            pl.plot( ctemp[0], ctemp[1], c='#00ff00', lw=lw )
+            texttoright = True
+            if pixcrd[j][0]/scalefactor+40 < xlims[1] and pixcrd[j][1]/scalefactor+20 < ylims[1]:
+                pl.text( pixcrd[j][0]/scalefactor+15, pixcrd[j][1]/scalefactor, `j`, color='#00ff00', fontsize=fs, fontweight=fw )
+            else:
+                texttoright = False
+                pl.text( pixcrd[j][0]/scalefactor-45, pixcrd[j][1]/scalefactor-20, `j`, color='#00ff00', fontsize=fs, fontweight=fw )
+                        
+            if i == 0: 
+                #Store source data to json
+                jsondict["data"].append(dict({ "id": j, "x": pixcrd[j][0], "y": pixcrd[j][1], "textToRight": texttoright }, **dict(itertools.izip(names,store[:len(names),j]))))
+
+
+        #Label plot and remove axes, save to filename+.png
+#        pl.text( 0.2*xlims[1], 0.9*ylims[1], cfilter+'-Band', color='r', fontsize=fs, fontweight=fw )
+        pl.text( xlims[0] + 3, ylims[1] - fs - 3, cfilter+'-Band', color='r', fontsize=fs, fontweight=fw )
         pl.savefig( ofile, bbox_inches='tight', pad_inches=0, transparent=True, dpi=dpi )
-   		
+   	
+
+    with open('photometry.json', 'wb') as f:
+        json.dump(jsondict, codecs.getwriter('utf-8')(f), ensure_ascii=False)
+
     #Create HTML to do quick look at data
     printhtml.printhtml(filters, names)
