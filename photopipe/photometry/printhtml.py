@@ -51,9 +51,28 @@ def plotFlux(filters, plotdict, colors):
 	pl.ylabel('AB Magnitude')
 	pl.legend(loc='lower right')
 	pl.savefig('abmag-energy.plot.png', bbox_inches='tight')
-	pl.clf()	
+	pl.clf()
 
-def printhtml(filters, colnames):
+def generateHeadersTable(headers, headers_names):
+	t = '<table border="1"><tr>'
+	for name in headers_names:
+		t = t + '<th>' + name['title'] + '</th>'
+	t = t + '</tr>'
+
+	for header in headers:
+		row = '<tr>'
+		for name in headers_names:
+			header_value = name['format'] % header[name['key']] if 'format' in name else header[name['key']] 
+			row = row + '<td>' + header_value + '</td>'
+		row = row + '</tr>'
+
+		t = t + row
+
+	t = t + '</table>'
+
+	return t
+
+def printhtml(filters, colnames, headers, headers_names):
 	#Reads in final magnitudes
 	colgrab = np.loadtxt('./finalmags.txt', unpack=True)
 	
@@ -61,9 +80,8 @@ def printhtml(filters, colnames):
 	plotdict = {}
 	t = '<tr><th>#</th>'
 	for i in np.arange(len(colnames)):
-		plotdict[colnames[i]] = colgrab[i,:]		
+		plotdict[colnames[i]] = colgrab[i,:]	
 		t = t + '<th>' + colnames[i]+'</th>'
-	
 	t = t + '<tr>\n' 
 
 	colors = ['black', 'purple','blue','aqua','green','orange','red','yellow', 'magenta']
@@ -90,6 +108,11 @@ def printhtml(filters, colnames):
 	    f.write( '<IMG SRC="./' + zffiles[i] + '" width="' + `im_wid` + '">\n' )
 	    if (i+1)%3 == 0:
 	    	f.write( '<BR>\n' )
+
+	#Write table with header info from each image
+	f.write( '<BR>\n' )
+	f.write(generateHeadersTable(headers, headers_names))
+	f.write( '<BR>\n' )
 
 	f.write( '<BR><HR><FONT SIZE="+2" COLOR="#006600">AB System Photometry (sources within 1 arcmin):</FONT><BR>\n' )
 	f.write( 'Notes: Non-zero magnitudes with uncertainty of zero are 3-sigma upper limits.  Sources with magnitudes of 0.0000 are unobserved.<BR>\n' )

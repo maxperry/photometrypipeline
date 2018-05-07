@@ -70,6 +70,7 @@ def plotphotom(prefchar='coadd'):
     cfilterarr = []
     imgarr = []
     harr   = []
+    harr_map = [ { 'key': 'FILTER', 'title': 'Filter' } , { 'key': 'DATE1', 'title': 'start' }, { 'key': 'DATEN', 'title': 'stop' }, { 'key': 'TOTALEXP', 'title': 'exposure', 'format': '%.2f' }]
 
     for i in range(len(zffiles)):
     
@@ -306,7 +307,7 @@ def plotphotom(prefchar='coadd'):
         fig.set_size_inches(figsize[0], figsize[1])
         pl.savefig('o_' + ofile, bbox_inches='tight', pad_inches=0, transparent=True, dpi=dpi )
 
-        jsondict["filterImages"].append({ "src": 'o_' + ofile, "filter": cfilter })
+        jsondict["filterImages"].append({ "src": 'o_' + ofile, "filter": cfilter, "data": extract_header(h, harr_map[1:]) })
 
         #For each star create a circle and plot in green
         #If pixel coordinates of star (from WCS conversion of RA and DEC) and within the 
@@ -336,4 +337,12 @@ def plotphotom(prefchar='coadd'):
         json.dump(jsondict, codecs.getwriter('utf-8')(f), ensure_ascii=False)
 
     #Create HTML to do quick look at data
-    printhtml.printhtml(filters, names)
+    printhtml.printhtml(filters, names, harr, harr_map)
+
+def extract_header(header, header_map):
+    result = []
+
+    for key in header_map:
+        result.append({ key['title']: header[key['key']] })
+
+    return result
