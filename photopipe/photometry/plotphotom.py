@@ -309,12 +309,12 @@ def plotphotom(prefchar='coadd'):
             else:
                 texttoright = False
                 pl.text( pixcrd[j][0]/scalefactor-45, pixcrd[j][1]/scalefactor-20, `j`, color='#00ff00', fontsize=fs, fontweight=fw )
-                        
+
             if i == 0: 
                 #Store source data to json
                 jsondict["data"].append(dict({ "id": j, "x": pixcrd[j][0], "y": pixcrd[j][1], "textToRight": texttoright }, **dict(itertools.izip(names,store[:len(names),j]))))
 
-
+        jsondict.update({ "referenceWidth": figsize[0] * dpi, "referenceHeight": figsize[1] * dpi })
         #Label plot and remove axes, save to filename+.png
 #        pl.text( 0.2*xlims[1], 0.9*ylims[1], cfilter+'-Band', color='r', fontsize=fs, fontweight=fw )
         pl.text( xlims[0] + 3, ylims[1] - fs - 3, cfilter+'-Band', color='r', fontsize=fs, fontweight=fw )
