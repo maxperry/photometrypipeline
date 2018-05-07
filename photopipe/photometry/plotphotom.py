@@ -53,7 +53,7 @@ def plotphotom(prefchar='coadd'):
     names = ['ra', 'dec']
     ifiltdict = {}
     for filter in filters:
-    	names.extend([filter+'mag', filter+'magerr'])
+    	names.extend([filter+'mag', filter+'magerr', filter+'flux', filter+'fluxerr'])
     	ifiltdict[filter] = -1
 
     #Create dictionary with keys from names list and all set to np.zeros(arr_size)
@@ -93,7 +93,7 @@ def plotphotom(prefchar='coadd'):
         #Read in finalphot[FILTER].am which has the instrument corrected photometry
         pfile = 'finalphot' + cfilter + '.am'
         try:
-            x, y, ra, dec, mag, magerr = np.loadtxt(pfile, unpack=True)
+            x, y, ra, dec, mag, magerr, flux, fluxerr = np.loadtxt(pfile, unpack=True)
         except IOError as error:
             print error
             continue
@@ -108,12 +108,18 @@ def plotphotom(prefchar='coadd'):
             
             plotdict[cfilter+'mag'][0:clen]    = mag
             plotdict[cfilter+'magerr'][0:clen] = magerr
+
+            plotdict[cfilter+'flux'][0:clen]    = flux
+            plotdict[cfilter+'fluxerr'][0:clen] = fluxerr
+
             nstars = clen
         else:
-            compra     = ra
-            compdec    = dec
-            compmag    = mag
-            compmagerr = magerr
+            compra      = ra
+            compdec     = dec
+            compmag     = mag
+            compmagerr  = magerr
+            compflux    = flux
+            compfluxerr = fluxerr
             
             #For each source in file find any sources that are within 1 arcsecond
             #if these exist then store information in same index but different filter's magnitude
@@ -125,13 +131,18 @@ def plotphotom(prefchar='coadd'):
                 						plotdict['ra']*np.cos(plotdict['dec']*np.pi/180.), plotdict['dec'], maxdist=1./3600. )
                 
                 if any(smatch):
-                	plotdict[cfilter+'mag'][smatch]    = compmag[j]
-                	plotdict[cfilter+'magerr'][smatch] = compmagerr[j]
+                    plotdict[cfilter+'mag'][smatch]     = compmag[j]
+                    plotdict[cfilter+'magerr'][smatch]  = compmagerr[j]
+                    plotdict[cfilter+'flux'][smatch]    = compflux[j]
+                    plotdict[cfilter+'fluxerr'][smatch] = compfluxerr[j]
+
                 else:
                     plotdict['ra'][nstars]  = compra[j]
                     plotdict['dec'][nstars] = compdec[j]
-                    plotdict[cfilter+'mag'][nstars]    = compmag[j]
-                    plotdict[cfilter+'magerr'][nstars] = compmagerr[j]
+                    plotdict[cfilter+'mag'][nstars]     = compmag[j]
+                    plotdict[cfilter+'magerr'][nstars]  = compmagerr[j]
+                    plotdict[cfilter+'flux'][nstars]    = compflux[j]
+                    plotdict[cfilter+'fluxerr'][nstars] = compfluxerr[j]
                     nstars += 1
     
     imgarr = np.array(imgarr)

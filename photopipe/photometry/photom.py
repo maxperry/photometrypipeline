@@ -17,7 +17,7 @@ OUTPUTS:
 	coords(FILTER) - RA and DEC coordinates from sextractor from cropped images
 	fluxes_(FILTER).txt - sextractor output from cropped images
 	finalphot(FILTER).am - file containing pixel and coordinate location, mag and 
-						   corrected mag error of sextractor sources found (fluxes_(FILTER).txt)
+						   corrected mag error, flux and flux error of sextractor sources found (fluxes_(FILTER).txt)
 	
 Translated from icoords.pro by John Capone (jicapone@astro.umd.edu).
 Modified by Vicki Toy (vtoy@astro.umd.edu) 5/21/2014
@@ -194,13 +194,13 @@ def photom(prefchar='coadd'):
 			str(hdr['SPIX'])+ ' -MAG_ZEROPOINT ' + str(hdr['ABSZPT'])+' ' + compfile)
 		os.system('mv -f temp.cat fluxes_'+filter+'.txt')
 		
-		#Columns unpacked for fluxes*.txt are: (x,y,ra,dec,mag,magerr,e,fwhm,flags)
+		#Columns unpacked for fluxes*.txt are: (x,y,ra,dec,mag,magerr,flux,fluxerr,e,fwhm,flags)
 		sexout = np.loadtxt('fluxes_'+filter+'.txt', unpack=True)
 		
 		magcol = 4
 		magerrcol = 5
 		
-		tout = np.transpose(sexout[0:6,:]) #Only include through magerr
+		tout = np.transpose(sexout[0:8,:]) #Only include through fluxerr
 		for i in np.arange(len(tout[:,magerrcol])):
 			tout[i,magerrcol] = max(tout[i,magerrcol], 0.01)
 		
@@ -211,4 +211,4 @@ def photom(prefchar='coadd'):
 		#Creates Absolute Magnitude file with coordinates
 		amfile = 'finalphot'+filter+'.am'		
 		np.savetxt(amfile, tsorted, fmt='%15.6f', 
-			header='X\t Y\t RA\t DEC\t CAL_MAG\t CAL_MAG_ERR\t')
+			header='X\t Y\t RA\t DEC\t CAL_MAG\t CAL_MAG_ERR\t CAL_FLUX\t CAL_FLUX_ERR\t')
