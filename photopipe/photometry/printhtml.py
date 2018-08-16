@@ -160,7 +160,7 @@ def printhtml(filters, colnames, omitted_colnames, headers, headers_names):
 		plotdict[colnames[i]] = colgrab[i,:]
         if not (colnames[i] in omitted_colnames):
             t = t + '<th>' + colnames[i]+'</th>'
-            t = t + '<tr>\n' 
+    t = t + '</tr>\n' 
 
 	colors = ['black', 'purple', 'blue', 'aqua', 'green', 'orange', 'red', 'yellow', 'magenta']
 	print 'Plotting AB Magnitude comparison'
@@ -207,7 +207,8 @@ def printhtml(filters, colnames, omitted_colnames, headers, headers_names):
 	for j in np.arange(len(plotdict[colnames[0]])):
 		f.write('<tr><td>{:.0f}</td>'.format(j))
 		for col in colnames:
-			f.write('<td>{:.3f}</td>'.format(plotdict[col][j]))
+			if not (col in omitted_colnames):
+				f.write('<td>{:.3f}</td>'.format(plotdict[col][j]))
 		f.write('<tr>\n')
 	f.write( '</table>\n' )
 	
