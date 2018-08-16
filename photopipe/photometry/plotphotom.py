@@ -1,20 +1,22 @@
 """
 NAME:
-	plotratir
+    plotphotom
 PURPOSE:
-	Read in prefchar*(FILTER).multi.ref.fits and finalphot(FILTER).am.  Find number
-	of unique stars and saves each filter's magnitude and error to the same star. 
-	Saves this to finalmags.txt.  Creates color plot with all of the images overlaid
-	(red = J/H, green = z/y, blue = r/i) and creates plot of each filter field with
-	green circles around each object.  Saves as coadd*(FILTER).png
-	Calls printhtml which create HTML to view all information
-	Can now take in different filters
+    Read in prefchar*(FILTER).multi.ref.fits and finalphot(FILTER).am.  Find number
+    of unique stars and saves each filter's magnitude and error to the same star. 
+    Saves this to finalmags.txt.  Creates color plot with all of the images overlaid
+    (red = J/H, green = z/y, blue = r/i) and creates plot of each filter field with
+    green circles around each object.  Saves as coadd*(FILTER).png
+    Creates a text file for each source with all SEDs from each finalphot(FILTER).am file.
+    Calls printhtml which create HTML to view all information.
+    Can now take in different filters.
 OUTPUTS:
-	finalmags.txt      - text file with all the magnitudes for each filter of each source
-	color.png          - overlay of all filters (red = J/H, green = z/y, blue = r/i)
-	coadd*(FILTER).png - images of each filter field with green circles over source
-	ratir.html         - html showing all information
-	
+    finalmags.txt          - text file with all the magnitudes for each filter of each source
+    color.png              - overlay of all filters (red = J/H, green = z/y, blue = r/i)
+    coadd*(FILTER).png     - images of each filter field with green circles over source
+    /seds/(INDEX).seds.txt - text file with all SEDs for each source
+    photom.html             - html showing all information
+    
 Slowest part is saving image using pl.savefig, can't find a workaround
 Need to modify colors based on different types of filters being provided
 
@@ -22,6 +24,7 @@ Translated from plotratir.pro by John Capone (jicapone@astro.umd.edu).
 Modified on 7/31/2014 by Vicki Toy (vtoy@astro.umd.edu)
 """
 
+import glob
 import numpy as np
 import astropy.io.fits as pf
 from scipy.ndimage.interpolation import zoom
@@ -40,27 +43,27 @@ import photprocesslibrary as pplib
 import printhtml
 import os
 import sys
-import itertools, time, json, codecs
+import itertools, time, json, codecs, re
 
 def plotphotom(prefchar='coadd'):
-	#Initialize arrays
+    #Initialize arrays
     filters = ['r','i','z','y','J','H']
     arr_size = 10000
     
     #Creates a list of names: ['ra', 'dec', '(FILTER)mag', '(FILTER)magerr'] including
     #all filters in filters list
     #Also initializes filter index dictionary for use later
-    names = ['ra', 'dec']
+    names = ['ra', 'dec', 'catindex']
     ifiltdict = {}
     for filter in filters:
-    	names.extend([filter+'mag', filter+'magerr', filter+'flux', filter+'fluxerr'])
-    	ifiltdict[filter] = -1
+        names.extend([filter+'mag', filter+'magerr', filter+'flux', filter+'fluxerr'])
+        ifiltdict[filter] = -1
 
     #Create dictionary with keys from names list and all set to np.zeros(arr_size)
     #easily changed for other filters
     plotdict = {}
     for name in names:
-    	plotdict[name] = np.zeros(arr_size)
+        plotdict[name] = np.zeros(arr_size)
 
     # retrieve detection files
     zffiles = pplib.choosefiles( prefchar+'*_?.ref.multi.fits' )
@@ -71,10 +74,11 @@ def plotphotom(prefchar='coadd'):
     imgarr = []
     harr   = []
     harr_map = [ { 'key': 'FILTER', 'title': 'Filter' } , { 'key': 'DATE1', 'title': 'start' }, { 'key': 'DATEN', 'title': 'stop' }, { 'key': 'TOTALEXP', 'title': 'exposure', 'format': '%.2f' }]
+    nstars = 0
 
     for i in range(len(zffiles)):
     
-    	#Find filter of each file and make sure that has the right capitalization
+        #Find filter of each file and make sure that has the right capitalization
         cfilter = zffiles[i].split('_')[-1].split('.')[0]
         if cfilter == 'Z' or cfilter == 'Y':
             cfilter = cfilter.lower()
@@ -94,7 +98,7 @@ def plotphotom(prefchar='coadd'):
         #Read in finalphot[FILTER].am which has the instrument corrected photometry
         pfile = 'finalphot' + cfilter + '.am'
         try:
-            x, y, ra, dec, mag, magerr, flux, fluxerr = np.loadtxt(pfile, unpack=True)
+            x, y, ra, dec, mag, magerr, flux, fluxerr, catindex = np.loadtxt(pfile, unpack=True)
         except IOError as error:
             print error
             continue
@@ -112,6 +116,7 @@ def plotphotom(prefchar='coadd'):
 
             plotdict[cfilter+'flux'][0:clen]    = flux
             plotdict[cfilter+'fluxerr'][0:clen] = fluxerr
+            plotdict['catindex'][0:clen] = catindex
 
             nstars = clen
         else:
@@ -121,6 +126,7 @@ def plotphotom(prefchar='coadd'):
             compmagerr  = magerr
             compflux    = flux
             compfluxerr = fluxerr
+            compcatindex = catindex
             
             #For each source in file find any sources that are within 1 arcsecond
             #if these exist then store information in same index but different filter's magnitude
@@ -129,13 +135,14 @@ def plotphotom(prefchar='coadd'):
 
             for j in range(len(compra)):
                 smatch = pplib.nearest( compra[j]*np.cos(compdec[j]*np.pi/180.), compdec[j], 
-                						plotdict['ra']*np.cos(plotdict['dec']*np.pi/180.), plotdict['dec'], maxdist=1./3600. )
-                
+                                        plotdict['ra']*np.cos(plotdict['dec']*np.pi/180.), plotdict['dec'], maxdist=1./3600. )
+               
                 if any(smatch):
                     plotdict[cfilter+'mag'][smatch]     = compmag[j]
                     plotdict[cfilter+'magerr'][smatch]  = compmagerr[j]
                     plotdict[cfilter+'flux'][smatch]    = compflux[j]
                     plotdict[cfilter+'fluxerr'][smatch] = compfluxerr[j]
+                    plotdict['catindex'][smatch] = compcatindex[j]
 
                 else:
                     plotdict['ra'][nstars]  = compra[j]
@@ -144,14 +151,15 @@ def plotphotom(prefchar='coadd'):
                     plotdict[cfilter+'magerr'][nstars]  = compmagerr[j]
                     plotdict[cfilter+'flux'][nstars]    = compflux[j]
                     plotdict[cfilter+'fluxerr'][nstars] = compfluxerr[j]
+                    plotdict['catindex'][nstars] = compcatindex[j]
                     nstars += 1
     
     imgarr = np.array(imgarr)
-	
-	#Save stars to finalmags.txt with correct format and removes zeros
+    
+    #Save stars to finalmags.txt with correct format and removes zeros
     store = np.zeros(nstars)
     for name in names:
-    	store = np.vstack( (store,plotdict[name][:nstars]) )
+        store = np.vstack( (store,plotdict[name][:nstars]) )
     
     store = store[1:, :] #Removes 0's from initialization
 
@@ -163,25 +171,25 @@ def plotphotom(prefchar='coadd'):
     removesource = []
     
     for s in np.arange(len(sra)):
-    	for file in zffiles:
-    		nzero = 0
-    		wmultifile = file[:-4]+'weight.fits'
-    		hlist = pf.open(wmultifile)
-    		wdata = hlist[0].data
-    		wh    = hlist[0].header
-    		w     = wcs.WCS(wh)
-    		spix  = w.wcs_world2pix(sra[s],sdec[s], 1)
-    		
-    		wcir  = pplib.circle(spix[0],spix[1],10)
-    		ncir  = len(wcir)
-    		for coord in wcir:
-    			if (wh['NAXIS1'] > coord[0] > 0) & (wh['NAXIS2'] > coord[1] > 0):
-    				if wdata[int(coord[1])][int(coord[0])] == 0: nzero += 1
-    			else:
-    				ncir -= 1
-    		if nzero >= 0.25*ncir: 
-    			removesource.append(s)
-    			break    
+        for file in zffiles:
+            nzero = 0
+            wmultifile = file[:-4]+'weight.fits'
+            hlist = pf.open(wmultifile)
+            wdata = hlist[0].data
+            wh    = hlist[0].header
+            w     = wcs.WCS(wh)
+            spix  = w.wcs_world2pix(sra[s],sdec[s], 1)
+            
+            wcir  = pplib.circle(spix[0],spix[1],10)
+            ncir  = len(wcir)
+            for coord in wcir:
+                if (wh['NAXIS1'] > coord[0] > 0) & (wh['NAXIS2'] > coord[1] > 0):
+                    if wdata[int(coord[1])][int(coord[0])] == 0: nzero += 1
+                else:
+                    ncir -= 1
+            if nzero >= 0.25*ncir: 
+                removesource.append(s)
+                break    
 
     store = np.delete(store, removesource, axis=1)
     np.savetxt('finalmags.txt', store.T, fmt='%12.6f')
@@ -189,43 +197,45 @@ def plotphotom(prefchar='coadd'):
     #Find the index of the file that corresponds to each filter and save 
     #to ifiltdict (initialized to -1)
     for item in ifiltdict:
-    	try:
-    		ifiltdict[item] = cfilterarr.index(item)
-    	except ValueError:
-    		pass
+        try:
+            ifiltdict[item] = cfilterarr.index(item)
+        except ValueError:
+            pass
 
-	#Determines colors based on which filters are present.  
-	#Red = J/H, green = z/y, blue = r/i
-	#If neither filter present, set to 0, if one present, use imgarr of data from that filter
-	#if both present use half from imgarr of data from each filter	
-	def fcolor(filt1, filt2, ifiltdict, imgarr):
-	
-		if filt1 and filt2 in ifiltdict:
-			if ifiltdict[filt1] >= 0 and ifiltdict[filt2] >= 0:
-				x = imgarr[ifiltdict[filt1],:,:] * 0.5 + imgarr[ifiltdict[filt2],:,:] * 0.5
-			if ifiltdict[filt1] >= 0 and ifiltdict[filt2] < 0:
-				x = imgarr[ifiltdict[filt1],:,:]
-			if ifiltdict[filt2] >= 0 and ifiltdict[filt1] < 0:
-				x = imgarr[ifiltdict[filt2],:,:]
-			if ifiltdict[filt2] < 0 and ifiltdict[filt1] < 0:
-				x = 0
-		else:
-			print 'Valid filters were not supplied, set color to 0'
-			x = 0
-			
-		return x 
+    #Determines colors based on which filters are present.  
+    #Red = J/H, green = z/y, blue = r/i
+    #If neither filter present, set to 0, if one present, use imgarr of data from that filter
+    #if both present use half from imgarr of data from each filter  
+    def fcolor(filt1, filt2, ifiltdict, imgarr):
+    
+        if filt1 and filt2 in ifiltdict:
+            if ifiltdict[filt1] >= 0 and ifiltdict[filt2] >= 0:
+                x = imgarr[ifiltdict[filt1],:,:] * 0.5 + imgarr[ifiltdict[filt2],:,:] * 0.5
+            if ifiltdict[filt1] >= 0 and ifiltdict[filt2] < 0:
+                x = imgarr[ifiltdict[filt1],:,:]
+            if ifiltdict[filt2] >= 0 and ifiltdict[filt1] < 0:
+                x = imgarr[ifiltdict[filt2],:,:]
+            if ifiltdict[filt2] < 0 and ifiltdict[filt1] < 0:
+                x = 0
+        else:
+            print 'Valid filters were not supplied, set color to 0'
+            x = 0
+            
+        return x 
         
     red   = fcolor('J', 'H', ifiltdict, imgarr)    
     green = fcolor('z', 'y', ifiltdict, imgarr) 
     blue  = fcolor('r', 'i', ifiltdict, imgarr)
 
-	#Determine image size base on if color filter exists (priority: red, green, blue in that order)
+    #Determine image size base on if color filter exists (priority: red, green, blue in that order)
     if np.size(red) > 1:
         im_size = np.shape(red)
     elif np.size(green) > 1:
         im_size = np.shape(green)
     elif np.size(blue) > 1:
         im_size = np.shape(blue)
+    else:
+        im_size = np.zeros(2)
 
     def bytearr( x, y, z ):
         return np.zeros((x,y,z)).astype(np.uint8)
@@ -254,15 +264,15 @@ def plotphotom(prefchar='coadd'):
     pline=''
     sfile = open('ratir_weighted.sex', 'r')
     for line in sfile:
-    	if 'PHOT_APERTURES' in line: pline=line
+        if 'PHOT_APERTURES' in line: pline=line
     sfile.close()
     
-    bpline = pline.split()	
+    bpline = pline.split()  
     
     if len(bpline) != 0:
-    	aper = int(bpline[1])/2.0 #radius
+        aper = int(bpline[1])/2.0 #radius
     else:
-    	aper = 10
+        aper = 10
     
     objra  = store[0]
     objdec = store[1]
@@ -273,30 +283,30 @@ def plotphotom(prefchar='coadd'):
     
     #Plot each image with circles on star identification
     for i in range(len(zffiles)):
-    	ifile   = zffiles[i]
+        ifile   = zffiles[i]
         ofile = ifile.split('.')[0] + '.png'
 
-    	img     = imgarr[i]
-    	h       = harr[i]
-    	cfilter = cfilterarr[i]
-    	
-    	scale   = bytescale(img, 0, 10, 255)
-    	dpi     = 72. # px per inch
-    	figsize = (np.array(img.shape)/dpi)[::-1]
-    	fig     = pl.figure(i)
-    	
-    	pl.imshow( scale, interpolation='None', cmap=pl.cm.gray, origin='lower' )
-    	xlims   = pl.xlim()
-    	ylims   = pl.ylim()
-    	
-    	# Parse the WCS keywords in the primary HDU    	
-    	w       = wcs.WCS(h)
-    	world   = np.transpose([objra, objdec])
-    	pixcrd  = w.wcs_world2pix(world, 1)
-    	
-    	fs = 20
-    	fw = 'normal'
-    	lw = 2
+        img     = imgarr[i]
+        h       = harr[i]
+        cfilter = cfilterarr[i]
+        
+        scale   = bytescale(img, 0, 10, 255)
+        dpi     = 72. # px per inch
+        figsize = (np.array(img.shape)/dpi)[::-1]
+        fig     = pl.figure(i)
+        
+        pl.imshow( scale, interpolation='None', cmap=pl.cm.gray, origin='lower' )
+        xlims   = pl.xlim()
+        ylims   = pl.ylim()
+        
+        # Parse the WCS keywords in the primary HDU     
+        w       = wcs.WCS(h)
+        world   = np.transpose([objra, objdec])
+        pixcrd  = w.wcs_world2pix(world, 1)
+        
+        fs = 20
+        fw = 'normal'
+        lw = 2
 
         a = pl.gca()
         a.set_frame_on(False)
@@ -331,13 +341,195 @@ def plotphotom(prefchar='coadd'):
 #        pl.text( 0.2*xlims[1], 0.9*ylims[1], cfilter+'-Band', color='r', fontsize=fs, fontweight=fw )
         pl.text( xlims[0] + 3, ylims[1] - fs - 3, cfilter+'-Band', color='r', fontsize=fs, fontweight=fw )
         pl.savefig( ofile, bbox_inches='tight', pad_inches=0, transparent=True, dpi=dpi )
-   	
+    
 
     with open('photometry.json', 'wb') as f:
         json.dump(jsondict, codecs.getwriter('utf-8')(f), ensure_ascii=False)
 
-    #Create HTML to do quick look at data
-    printhtml.printhtml(filters, names, harr, harr_map)
+    #Prepare SEDs for plot
+    plotseds()
+
+    #Create HTML to do quick look at data    
+    printhtml.printhtml(filters, names, set(['catindex']), harr, harr_map)
+
+
+def plotseds_1():
+    #filters = ['r','i','z','y','J','H']
+
+    # load .cat files
+    files = glob.glob('cat/*.cat')
+
+    if len(files) == 0:
+        print 'Did not find any cat files! Check your data directory path!'
+        return
+
+    # group .cat files by filter
+    filter_files_dict = {}
+
+    for file in files:
+        filter = file.split('_')[-1].split('.')[0]
+
+        if filter == 'Z' or filter == 'Y':
+            filter = filter.lower()
+
+        if not filter in filter_files_dict:
+            filter_files_dict[filter] = []
+
+        filter_files_dict[filter].append(file)
+
+    try:
+        finalmags = np.loadtxt('./finalmags.txt')
+        final_ra = finalmags[:,0]
+        final_dec = finalmags[:,1]
+        final_catindex = finalmags[:]
+    except IOError as error:
+        print error
+        return
+
+    filters = filter_files_dict.keys()
+
+    for filter in filters:
+        filter_seds = None
+        for file in filter_files_dict[filter]:
+            print file
+            data = np.loadtxt(file, unpack=False)
+            data_ra = data[:,0]
+            data_dec = data[:,1]
+            for i in range(len(data)):
+                if data[i][-1] != -1: # Check valid mode
+                    match = pplib.nearest( data_ra[i]*np.cos(data_dec[i]*np.pi/180.), data_dec[i], 
+                                        final_ra*np.cos(final_dec*np.pi/180.), final_dec, maxdist=3./3600. )
+                    match_indexes = np.where(match)[0]
+                    print 'MATCH'
+                    print match_indexes
+                    if any(match) and len(match_indexes) == 1:                        
+                        sed = data[i]
+                        sed[0] = final_ra[match]
+                        sed[1] = final_dec[match]
+                        # Store source index mapped to finalmags.txt
+                        sed = np.append(match_indexes, sed)
+                        print 'SED:'
+                        print sed
+                        if filter_seds is None:
+                            filter_seds = np.array([sed])
+                        else:
+                            duplicate = False
+                            for s in filter_seds:                                
+                                duplicate = duplicate or np.array_equal(s, sed)
+                            if not duplicate:
+                                filter_seds = np.append(filter_seds, np.array([sed]), 0)
+
+        filename = './seds/' + filter + '.seds.txt'
+        np.savetxt(filename, filter_seds, fmt='%12.6f')
+
+def plotseds_2():
+    #filters = ['r','i','z','y','J','H']
+
+    # load .cat files
+    files = glob.glob('cat/*.cat')
+
+    if len(files) == 0:
+        print 'Did not find any cat files! Check your data directory path!'
+        return
+
+    # group .cat files by filter
+    filter_files_dict = {}
+
+    for file in files:
+        filter = file.split('_')[-1].split('.')[0]
+
+        if filter == 'Z' or filter == 'Y':
+            filter = filter.lower()
+
+        if not filter in filter_files_dict:
+            filter_files_dict[filter] = []
+
+        filter_files_dict[filter].append(file)
+
+    filters = filter_files_dict.keys()
+
+    for filter in filters:
+        filter_seds = None
+        for file in filter_files_dict[filter]:
+            timestamp = extract_timestamp(file)
+            print file
+            data = np.loadtxt(file, unpack=False)
+            for i in range(len(data)):
+                if data[i][-1] != -1: # Check valid mode
+                    sed = np.append(data[i], [timestamp])
+                    
+                    if filter_seds is None:
+                        filter_seds = np.array([sed])
+                    else:
+                        duplicate = False
+                        for s in filter_seds:                                
+                            duplicate = duplicate or np.array_equal(s[:-1], sed[:-1])
+                        if not duplicate:
+                            filter_seds = np.append(filter_seds, np.array([sed]), 0)
+
+        filename = './seds/' + filter + '.seds.txt'
+        np.savetxt(filename, filter_seds, fmt='%s')
+
+def plotseds(prefchar='coadd'):
+    files = glob.glob(prefchar + '*.seds.cat')
+
+    if len(files) == 0:
+        print 'Did not find any cat files! Check your data directory path!'
+        return
+
+    try:
+        finalmags = np.loadtxt('./finalmags.txt')
+        final_catindex = finalmags[:,2]
+    except IOError as error:
+        print error
+        return
+    
+    catindex_dict = final_catindex.tolist()
+    source_dict = {}
+
+    for file in files:
+        filter = file.split('_')[-1].split('.')[0]
+
+        if filter == 'Z' or filter == 'Y':
+            filter = filter.lower()
+
+        timestamp = extract_timestamp(file)
+
+        data = np.loadtxt(file, unpack=False)
+        for i in range(len(data)):
+            if i in catindex_dict and data[i][-1] != -1: # Check valid mode
+                sed = np.append(data[i], [timestamp, filter])
+                
+                if not i in source_dict:
+                    source_dict[i] = np.array([sed])
+                else:
+                    duplicate = False
+                    sources = source_dict[i] 
+                    for s in sources:
+                        duplicate = duplicate or np.array_equal(s[:-1], sed[:-1])
+
+                    if not duplicate:
+                        source_dict[i] = np.append(sources, np.array([sed]), 0)
+
+    sources = source_dict.keys()
+    make_path('./seds/')
+    for i in sources:
+        filename = './seds/' + str(i) + '.seds.txt'
+        np.savetxt(filename, source_dict[i], fmt='%s')
+
+def make_path(path):
+        dir = os.path.dirname(path)
+        if not os.path.exists(dir):
+                os.makedirs(dir)
+                
+def extract_timestamp(filename):
+    regex = r"([0-9]{8}T[0-9]{6}[0-9]{0,3})"
+    matches = re.finditer(regex, filename, re.MULTILINE)
+
+    for matchNum, match in enumerate(matches):
+        return match.group()
+
+    return None            
 
 def extract_header(header, header_map):
     result = []
