@@ -14,7 +14,7 @@ OUTPUTS:
     finalmags.txt          - text file with all the magnitudes for each filter of each source
     color.png              - overlay of all filters (red = J/H, green = z/y, blue = r/i)
     coadd*(FILTER).png     - images of each filter field with green circles over source
-    /seds/(INDEX).seds.txt - text file with all SEDs for each source
+    seds/(INDEX).seds.txt - text file with all SEDs for each source
     photom.html             - html showing all information
     
 Slowest part is saving image using pl.savefig, can't find a workaround
