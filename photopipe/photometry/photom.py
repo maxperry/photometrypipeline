@@ -234,6 +234,6 @@ def photom(prefchar='coadd'):
 		tsorted =  tout[np.argsort(tout[:,magcol])]
 			
 		#Creates Absolute Magnitude file with coordinates
-		amfile = 'finalphot'+filter+'.am'		
-		np.savetxt(amfile, tsorted, fmt='%15.6f', 
+		amfile = 'finalphot'+filter+'.am'
+		np.savetxt(amfile, tsorted, fmt='%15.6f ' * 8 + '%i', 
 			header='X\t Y\t RA\t DEC\t CAL_MAG\t CAL_MAG_ERR\t CAL_FLUX\t CAL_FLUX_ERR\t CAT_INDEX\t')

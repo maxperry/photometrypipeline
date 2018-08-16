@@ -192,7 +192,7 @@ def plotphotom(prefchar='coadd'):
                 break    
 
     store = np.delete(store, removesource, axis=1)
-    np.savetxt('finalmags.txt', store.T, fmt='%12.6f')
+    np.savetxt('finalmags.txt', store.T, fmt='%12.6f %12.6f %i ' + '%12.6f ' * 24)
     
     #Find the index of the file that corresponds to each filter and save 
     #to ifiltdict (initialized to -1)
