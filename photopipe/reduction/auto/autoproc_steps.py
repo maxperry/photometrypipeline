@@ -731,9 +731,7 @@ def autopipestack(pipevar=inpipevar, customcat=None, customcatfilt=[]):
             firsttime = Time(stacktime[0], format='jd', scale='utc').isot
             lasttime  = Time(stacktime[-1], format='jd', scale='utc').isot
             medtime   = Time(np.median(stacktime), format='jd', scale='utc').isot
-            
-            textslist = ' '.join(stacklist)
-            
+                        
             zpts = []
             
             # Find stars for each individual frame and try to find matches with coadded 
@@ -762,7 +760,7 @@ def autopipestack(pipevar=inpipevar, customcat=None, customcatfilt=[]):
                             print error
                         
                 w = wcs.WCS(head)
-                wrd = w.all_pix2world(np.transpose([xim, yim]), 0)                
+                wrd = w.all_pix2world(np.transpose([xim, yim]), 0)
                 imfile  = sfile + '.im'
                 catfile = sfile + '.cat'
                 
@@ -862,7 +860,7 @@ def autopipestack(pipevar=inpipevar, customcat=None, customcatfilt=[]):
             goodframes = np.isfinite(zpts)
             badframes  = ~np.isfinite(zpts)
             
-            if len(zpts[badframes]) !=0:
+            if len(zpts[badframes]) != 0:
                 if not os.path.exists(pipevar['imworkingdir']+'/badzptfit'):
                     os.makedirs(pipevar['imworkingdir']+'/badzptfit')
                 for file in stacklist[badframes]:
@@ -963,9 +961,9 @@ def autopipestack(pipevar=inpipevar, customcat=None, customcatfilt=[]):
                     print error
                         
             w = wcs.WCS(head)
-            wrd = w.all_pix2world(np.transpose([xim, yim]), 0)                
+            wrd = w.all_pix2world(np.transpose([xim, yim]), 0)
             imfile  = outfl + '.im'
-            catfile = outfl + '.cat'      		
+            catfile = outfl + '.cat'
 
             # Save stars from image
             np.savetxt(imfile, np.transpose([wrd[:,0],wrd[:,1],mag]))

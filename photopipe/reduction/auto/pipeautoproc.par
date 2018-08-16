@@ -1,5 +1,5 @@
-autoastrocommand : /Users/max/Workspaces/gsfc/photometry_pipeline/code/reduction/astrom/vlt_autoastrometry.py
-getsedcommand	  : /Users/max/Workspaces/gsfc/photometry_pipeline/code/photometry/dependencies/get_SEDs.py
+autoastrocommand : 
+getsedcommand	  : 
 swarpcommand     : /opt/local/bin/swarp
 sexcommand       : /opt/local/bin/sex
 scampcommand	  : /usr/local/bin/scamp
