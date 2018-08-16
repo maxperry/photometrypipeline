@@ -60,12 +60,11 @@ def plot_seds(filters):
         print 'Did not find any SEDs files! Check your data directory path!'
         return    
 
-    pl.figure()
+    figure = pl.figure()
     pl.ylim([15,22])
     pl.xlim([3000, 22000])
     
     for file in files:
-        print file
         source_index = (file.split(".")[0]).split('/')[1]
 
         # data = np.genfromtxt(file, delimiter=' ', dtype=None)
@@ -112,17 +111,20 @@ def plot_seds(filters):
             col.set_position([box.x0, box.y0 + box.height * 0.1,
                  box.width, box.height * 0.9])
             # Put a legend below current axis
-            col.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25), fancybox=True, shadow=False, ncol=5, prop={'size': 11})
+            col.legend(loc='upper center', bbox_to_anchor=(0.5, -0.2), fancybox=True, shadow=False, ncol=5, prop={'size': 11})
 
             if (ax_col + 1) % 2 == 0:
                 ax_row = ax_row + 1
                 ax_col = 0
             else:
-                ax_col = ax_col + 1
+                ax_col = ax_col + 1            
 
         # pl.suptitle('Source #' + source_index, fontsize=16)        
         pl.savefig('seds/' + source_index + '.plot.png', bbox_inches='tight')
         pl.clf()
+        pl.close(fig)
+
+    pl.close(figure)
 
 def plot_seds_test():
     filters = ['r','i','z','y','J','H']
