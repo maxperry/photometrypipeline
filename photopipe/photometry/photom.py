@@ -27,12 +27,16 @@ import numpy as np
 import os
 import astropy.io.fits as pf
 import photprocesslibrary as pplib
+import autoproc_steps as ap
 from string import index
 from numpy import shape
 from astropy import wcs
 
 
 def photom(prefchar='coadd'):
+
+	pipevar = {'getsedcommand':'get_SEDs', 'sexcommand':'sex' , 'swarpcommand':'swarp', 'refdatapath':'', 'defaultspath':'', 'imworkingdir':'' }
+	ap.autopipedefaults(pipevar=pipevar)
 
 	#Identify files (must have same number of images files as weight files)
 	zffiles     = pplib.choosefiles(prefchar + '*_?.fits')
@@ -42,7 +46,7 @@ def photom(prefchar='coadd'):
 		print 'Must have matching weight file to each image file to run automatic crop.'
 		print 'To use manual crop user manualcrop keyword and change crop values by hand'
 		return -1
-		
+	
 	numfiles = len(zffiles)
 		
 	#Resample all images using SWarp to a reference image called multicolor using weight files
@@ -104,7 +108,6 @@ def photom(prefchar='coadd'):
 	#Crops data so the size of every filter image matches and saves to file 'coadd*.multi.fits'
 	#Same for weight file
 	for files in coaddfiles:
-
 		newfile = files[:-4]+'multi.fits'
 		fitsfile = pf.open(files)
 		fitsheader = fitsfile[0].header
@@ -162,6 +165,7 @@ def photom(prefchar='coadd'):
 		os.system('cp '+propath+'/defaults/ratir_nir.nnw .')
 
 	coaddfiles = pplib.choosefiles(prefchar+'*_?.fits')
+
 	#Uses sextractor to find the magnitude and location of sources for each file
 	#Saves this information into 'fluxes_*.txt' files
 	for files in coaddfiles:
@@ -179,7 +183,7 @@ def photom(prefchar='coadd'):
 
 		#Finds filter name and makes sure it is capitalized correctly		
 		filter = files.split('_')[-1].split('.')[0]
-	
+
 		if filter.lower() in ('j','h','k'):
 			filter = filter.upper()
 		else:
@@ -199,8 +203,29 @@ def photom(prefchar='coadd'):
 		
 		magcol = 4
 		magerrcol = 5
+
+		# SEDs
+		#Create catalog star file
+		xim  = sexout[0,:]
+		yim  = sexout[1,:]
+
+		w = wcs.WCS(hdr)
+		wrd = w.all_pix2world(np.transpose([xim, yim]), 0)
+		imfile  = files + '.seds.im'
+		catfile = files + '.seds.cat'
+
+		# Save stars from image
+		np.savetxt(imfile, np.transpose([wrd[:,0],wrd[:,1],sexout[magcol,:]]))
+
+		sedcmd = 'python ' + pipevar['getsedcommand'] + ' ' + imfile + ' ' +\
+		filter + ' ' + catfile + " 15 True True"
+		os.system(sedcmd)
+		#
 		
-		tout = np.transpose(sexout[0:8,:]) #Only include through fluxerr
+		#tout = np.transpose(sexout[0:8,:]) #Only include through fluxerr
+		indexes = np.array([np.arange(len(sexout[0,:]))])
+		tout = np.hstack((sexout[0:8,:].T, indexes.T))
+
 		for i in np.arange(len(tout[:,magerrcol])):
 			tout[i,magerrcol] = max(tout[i,magerrcol], 0.01)
 		
@@ -211,4 +236,4 @@ def photom(prefchar='coadd'):
 		#Creates Absolute Magnitude file with coordinates
 		amfile = 'finalphot'+filter+'.am'		
 		np.savetxt(amfile, tsorted, fmt='%15.6f', 
-			header='X\t Y\t RA\t DEC\t CAL_MAG\t CAL_MAG_ERR\t CAL_FLUX\t CAL_FLUX_ERR\t')
+			header='X\t Y\t RA\t DEC\t CAL_MAG\t CAL_MAG_ERR\t CAL_FLUX\t CAL_FLUX_ERR\t CAT_INDEX\t')

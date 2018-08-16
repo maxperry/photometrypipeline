@@ -37,7 +37,7 @@ PURPOSE:
 INPUTS:
 	x, y      - reference coordinate
 	xarr,yarr - array of coordinates to compare to reference coordinate
-	mindist   - maximum distance that coordinates can be from reference coordinates
+	maxdist   - maximum distance that coordinates can be from reference coordinates
 OUTPUTS:
 	Returns mask of values that are within maximum distance from reference
 EXAMPLE:
