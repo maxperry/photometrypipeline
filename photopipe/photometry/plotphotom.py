@@ -378,7 +378,7 @@ def plotseds(prefchar='coadd'):
 
         data = np.loadtxt(file, unpack=False)
         for i in range(len(data)):
-            if i in catindex_dict and data[i][-1] != -1: # Check valid mode
+            if i in catindex_dict:
                 sed = np.append(data[i], [timestamp, filter])
                 
                 if not i in source_dict:
