@@ -278,7 +278,7 @@ def plotphotom(prefchar='coadd'):
     objdec = store[1]
 
     #Initialize dictionary for photometry json file
-    jsondict = { "createdAt": time.time(), "header": ['id'] + names, "filters": filters, "colorImgSrc": "color.png", "aperture": aper, "scaleFactor": scalefactor, "filterImages": [], "data": [] }
+    jsondict = { "createdAt": time.time(), "header": ['id'] + names, "filters": filters, "colorImgSrc": "color.png", "abMagPlotSrc": "photcomp.png", "aperture": aper, "scaleFactor": scalefactor, "filterImages": [], "data": [] }
     #
     
     #Plot each image with circles on star identification
@@ -317,7 +317,7 @@ def plotphotom(prefchar='coadd'):
         fig.set_size_inches(figsize[0], figsize[1])
         pl.savefig('o_' + ofile, bbox_inches='tight', pad_inches=0, transparent=True, dpi=dpi )
 
-        jsondict["filterImages"].append({ "src": 'o_' + ofile, "filter": cfilter, "data": extract_header(h, harr_map[1:]) })
+        jsondict["filterImages"].append(dict({ "src": 'o_' + ofile, "filter": cfilter }, **extract_header(h, harr_map[1:])))
 
         #For each star create a circle and plot in green
         #If pixel coordinates of star (from WCS conversion of RA and DEC) and within the 
@@ -342,7 +342,6 @@ def plotphotom(prefchar='coadd'):
         pl.text( xlims[0] + 3, ylims[1] - fs - 3, cfilter+'-Band', color='r', fontsize=fs, fontweight=fw )
         pl.savefig( ofile, bbox_inches='tight', pad_inches=0, transparent=True, dpi=dpi )
     
-
     with open('photometry.json', 'wb') as f:
         json.dump(jsondict, codecs.getwriter('utf-8')(f), ensure_ascii=False)
 
@@ -414,9 +413,9 @@ def extract_timestamp(filename):
     return None            
 
 def extract_header(header, header_map):
-    result = []
+    result = {}
 
     for key in header_map:
-        result.append({ key['title']: header[key['key']] })
+        result[key['title']] = header[key['key']]
 
     return result
